@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import './App.css';
 import CreatureTable from './CreatureTable';
+import CreatureMap from './CreatureMap';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,14 +61,18 @@ const useStyles = makeStyles((theme) => ({
       <div className={classes.root}>
         <AppBar position="static">
           <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-            <Tab label="Tamed" {...a11yProps(0)} />
-            <Tab label="Wild" {...a11yProps(1)} />
+            <Tab label="Map" {...a11yProps(0)} />
+            <Tab label="Tamed" {...a11yProps(1)} />
+            <Tab label="Wild" {...a11yProps(2)} />
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <CreatureTable file="tames" title="Tamed Dinos"/>
+          <CreatureMap/>
         </TabPanel>
         <TabPanel value={value} index={1}>
+          <CreatureTable file="tames" title="Tamed Dinos"/>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
           <CreatureTable file="wild" title="Wild Dinos"/>
         </TabPanel>
       </div>

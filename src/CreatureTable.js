@@ -95,46 +95,56 @@ function lon(data) {
   }
 }
 
-const COLUMNS={
-  wild: [
-      {title: 'Type', field: 'ClassName'},
-      {title: '👫', field: 'Gender', render: d => d.Gender === 'Male' ? '♂️' : '♀️'},
-      {title: 'LVL', field: 'BaseLevel'},
-      wildStat('health'),
-      wildStat('stamina'),
-      wildStat('oxygen'),
-      wildStat('food'),
-      wildStat('weight'),
-      wildStat('melee'),
-      wildStat('speed'),
-      lat(),
-      lon(),
-  ],
-  tames: [
-      {title: 'Name', field: 'Name'},
-      {title: 'Type', field: 'ClassName'},
-      {title: '👫', field: 'Gender', render: d => d.Gender === 'Male' ? '♂️' : '♀️'},
-      {title: 'LVL', field: 'BaseLevel'},
-      tamedStat('health'),
-      tamedStat('stamina'),
-      tamedStat('oxygen'),
-      tamedStat('food'),
-      tamedStat('weight'),
-      tamedStat('melee'),
-      tamedStat('speed'),
-      lat(),
-      lon(),
-  ]
-};
-
 export default function CreatureTable(props) {
     const { file, title } = props;
     const [data, setData] = useState([]);
     const [selectedRow, setSelectedRow] = useState(null);
+    const [dinoTypes, setTypes] = useState({});
+
+    const COLUMNS={
+      wild: [
+          {title: 'Type', field: 'ClassName', lookup: dinoTypes},
+          {title: '👫', field: 'Gender', lookup: {'Male': '♂️', 'Female': '♀️'} },
+          {title: 'LVL', field: 'BaseLevel', filtering: false},
+          wildStat('health'),
+          wildStat('stamina'),
+          wildStat('oxygen'),
+          wildStat('food'),
+          wildStat('weight'),
+          wildStat('melee'),
+          wildStat('speed'),
+          lat(),
+          lon(),
+      ],
+      tames: [
+          {title: 'Name', field: 'Name'},
+          {title: 'Type', field: 'ClassName', lookup: dinoTypes},
+          {title: '👫', field: 'Gender', lookup: {'Male': '♂️', 'Female': '♀️'} },
+          {title: 'LVL', field: 'BaseLevel', filtering: false},
+          tamedStat('health'),
+          tamedStat('stamina'),
+          tamedStat('oxygen'),
+          tamedStat('food'),
+          tamedStat('weight'),
+          tamedStat('melee'),
+          tamedStat('speed'),
+          lat(),
+          lon(),
+      ]
+    };
 
     useEffect(() => {
         fetch(`${file}.json`).then(r => r.json()).then(d => {
-            setData(d);
+          let types = new Set();
+          for (var dino of d) {
+            types.add(dino.ClassName);
+          }
+          let typeMap = {};
+          for (var name of types) {
+            typeMap[name] = name.replace('_Character_BP_C', '');
+          }
+          setTypes(typeMap);
+          setData(d);
         });
     }, [file]);
 
@@ -151,19 +161,22 @@ export default function CreatureTable(props) {
               width: '300px',
               backgroundSize: 'contain',
             }}>
-              <img src="x.png" style={{
-                position: 'relative',
-                display: 'block',
-                height: '10px',
-                left: `${map_x0 + data.Location.Longitude * map_dx}px`,
-                top: `${map_y0 + data.Location.Latitude * map_dy}px`,
-              }}/>
+              <img src="x.png" alt="X"
+                style={{
+                  position: 'relative',
+                  display: 'block',
+                  height: '10px',
+                  left: `${map_x0 + data.Location.Longitude * map_dx}px`,
+                  top: `${map_y0 + data.Location.Latitude * map_dy}px`,
+                }}
+              />
             </div>
         }}
         options={{
             pageSize: 50,
             pageSizeOptions: [ 10, 25, 50],
             sorting: true,
+            filtering: true,
             padding: 'dense',
             rowStyle: rowData => ({
               backgroundColor: (selectedRow === rowData.tableData.id) ? '#EEE' : '#FFF'
