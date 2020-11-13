@@ -28,15 +28,6 @@ const STATS = {
   melee: { title: '⛏️', ind: 8 },
   speed: { title: '🦶', ind: 9 },
 };
-// 50 x 34
-// 21, 17
-
-//10, 10 = 45, 47
-//90, 90 = 362, 355
-const map_dx = (362 - 45) / 80 * .75;
-const map_x0 = 45 * .75 - 6.2 - 10 * map_dx;
-const map_dy = (355 - 47) / 80 * .75;
-const map_y0 = 47 * .75 - 3.4 - 10 * map_dy;
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -58,16 +49,6 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-function tamedStat(field) {
-  var { title, ind } = STATS[field];
-  return {
-    title: title,
-    render: data => `${data.baseStats[ind] + data.tamedStats[ind]}/${data.baseStats[ind]}`,
-    customSort: (a, b) => a.baseStats[ind] - b.baseStats[ind],
-    defaultSort: 'asc',
-  }
-}
-
 function wildStat(field) {
   var { title, ind } = STATS[field];
   return {
@@ -78,70 +59,40 @@ function wildStat(field) {
   }
 }
 
-function lat(data) {
-  return {
-    title: 'Lat',
-    render: data => data.latitude.toFixed(1),
-    customSort: (a, b) => a.latitude - b.latitude,
-    defaultSort: 'desc',
-  }
-}
+const egg_name = /Egg_(.*)_Fertilized/;
 
-function lon(data) {
-  return {
-    title: 'Lon',
-    render: data => data.longitude.toFixed(1),
-    customSort: (a, b) => a.longitude - b.longitude,
-  }
-}
-
-export default function CreatureTable(props) {
+export default function NurseryTable(props) {
   const { file, title } = props;
   const [data, setData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [dinoTypes, setTypes] = useState({});
 
-  const COLUMNS = {
-    wild: [
-      { title: 'Type', field: 'className', lookup: dinoTypes },
-      { title: '👫', field: 'isFemale', lookup: { false: '♂️', true: '♀️' } },
-      { title: 'LVL', field: 'baseLevel', filtering: false },
-      wildStat('health'),
-      wildStat('stamina'),
-      wildStat('oxygen'),
-      wildStat('food'),
-      wildStat('weight'),
-      wildStat('melee'),
-      wildStat('speed'),
-      lat(),
-      lon(),
-    ],
-    tames: [
-      { title: 'Name', field: 'name' },
-      { title: 'Type', field: 'className', lookup: dinoTypes },
-      { title: '👫', field: 'isFemale', lookup: { false: '♂️', true: '♀️' } },
-      { title: 'LVL', field: 'baseLevel', filtering: false },
-      tamedStat('health'),
-      tamedStat('stamina'),
-      tamedStat('oxygen'),
-      tamedStat('food'),
-      tamedStat('weight'),
-      tamedStat('melee'),
-      tamedStat('speed'),
-      lat(),
-      lon(),
-    ]
-  };
+  const COLUMNS = [
+    { title: 'Type', field: 'className', lookup: dinoTypes },
+    { title: 'Parent', field: 'parent', filtering: true },
+    wildStat('health'),
+    wildStat('stamina'),
+    wildStat('oxygen'),
+    wildStat('food'),
+    wildStat('weight'),
+    wildStat('melee'),
+    wildStat('speed'),
+  ];
 
   useEffect(() => {
-    fetch(`${file}.json`).then(r => r.json()).then(d => {
+    fetch('nursery.json').then(r => r.json()).then(d => {
       let types = new Set();
       for (var dino of d) {
         types.add(dino.className);
       }
       let typeMap = {};
       for (var name of types) {
-        typeMap[name] = name.replace('_Character_BP_C', '');
+        if (name.startsWith('Primal')) {
+          var match = egg_name.exec(name);
+          typeMap[name] = match[1];
+        } else {
+          typeMap[name] = name.replace('_Character_BP_C', '').replace();
+        }
       }
       setTypes(typeMap);
       setData(d);
@@ -151,27 +102,8 @@ export default function CreatureTable(props) {
   return <MaterialTable
     icons={tableIcons}
     title={title}
-    columns={COLUMNS[file]}
+    columns={COLUMNS}
     data={data}
-    onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow.tableData.id))}
-    detailPanel={data => {
-      return <div style={{
-        backgroundImage: "url('TheIsland.png')",
-        height: '300px',
-        width: '300px',
-        backgroundSize: 'contain',
-      }}>
-        <img src="x.png" alt="X"
-          style={{
-            position: 'relative',
-            display: 'block',
-            height: '10px',
-            left: `${map_x0 + data.longitude * map_dx}px`,
-            top: `${map_y0 + data.latitude * map_dy}px`,
-          }}
-        />
-      </div>
-    }}
     options={{
       pageSize: 50,
       pageSizeOptions: [10, 25, 50],

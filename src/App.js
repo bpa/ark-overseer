@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box';
 import './App.css';
 import CreatureTable from './CreatureTable';
 import CreatureMap from './CreatureMap';
+import NurseryTable from './NurseryTable';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,32 +50,36 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
 }));
-  export default function App() {
-    const classes = useStyles();
-    const [value, setValue] = React.useState(0);
-  
-    const handleChange = (event, newValue) => {
-      setValue(newValue);
-    };
-  
-    return (
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-            <Tab label="Map" {...a11yProps(0)} />
-            <Tab label="Tamed" {...a11yProps(1)} />
-            <Tab label="Wild" {...a11yProps(2)} />
-          </Tabs>
-        </AppBar>
-        <TabPanel value={value} index={0}>
-          <CreatureMap/>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <CreatureTable file="tames" title="Tamed Dinos"/>
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <CreatureTable file="wild" title="Wild Dinos"/>
-        </TabPanel>
-      </div>
-    );
-  }
+export default function App() {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+          <Tab label="Map" {...a11yProps(0)} />
+          <Tab label="Tamed" {...a11yProps(1)} />
+          <Tab label="Wild" {...a11yProps(2)} />
+          <Tab label="Nursery" {...a11yProps(3)} />
+        </Tabs>
+      </AppBar>
+      <TabPanel value={value} index={0}>
+        <CreatureMap />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <CreatureTable file="tames" title="Tamed Dinos" />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <CreatureTable file="wild" title="Wild Dinos" />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <NurseryTable file="nursery" title="Nursery" />
+      </TabPanel>
+    </div>
+  );
+}
