@@ -18,6 +18,8 @@ Also, my server runs on linux, so the tools I found through searching don't work
 
 This site was built with react-scripts, see [react readme](REACT.md) for its documentation.
 
+Note: I only have assets for the island right now, so other maps will need to be added before they work correctly.
+
 ## Getting test data
 
 Data for this site is created with [ark-file-parser](https://github.com/bpa/ark-file-parser)
@@ -46,6 +48,7 @@ Data for this site is created with [ark-file-parser](https://github.com/bpa/ark-
  * Enhance tames & nursery to show parent stats & mutations
  * Notifications for hungry tames
  * Notifications for gestation and incubation
+ * Support other maps besides The Island
 
  # Contributing
 
