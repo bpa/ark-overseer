@@ -15,6 +15,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import { ark } from './Maps';
 
 const STATS = {
   health: { title: '❤️', ind: 0 },
@@ -80,7 +81,7 @@ export default function NurseryTable(props) {
   ];
 
   useEffect(() => {
-    fetch('nursery.json').then(r => r.json()).then(d => {
+    fetch(`${ark.name}/nursery.json`).then(r => r.json()).then(d => {
       let types = new Set();
       for (var dino of d) {
         types.add(dino.className);

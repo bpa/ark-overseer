@@ -10,6 +10,7 @@ import './App.css';
 import CreatureTable from './CreatureTable';
 import CreatureMap from './CreatureMap';
 import NurseryTable from './NurseryTable';
+import CalibrateMap from './CalibrateMap';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -61,7 +62,7 @@ export default function App() {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+        <Tabs value={value} onChange={handleChange} aria-label="Views">
           <Tab label="Map" {...a11yProps(0)} />
           <Tab label="Tamed" {...a11yProps(1)} />
           <Tab label="Wild" {...a11yProps(2)} />
@@ -79,6 +80,9 @@ export default function App() {
       </TabPanel>
       <TabPanel value={value} index={3}>
         <NurseryTable file="nursery" title="Nursery" />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        <CalibrateMap title="Calibrate" />
       </TabPanel>
     </div>
   );

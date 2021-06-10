@@ -1,26 +1,106 @@
-function Ark(img, x0, x1, y0, y1) {
-  this.image = img;
-  this.x0 = x0;
-  this.x1 = x1;
-  this.y0 = y0;
-  this.y1 = y1;
-
-  this.draw = function(ctx, lon, lat, width, height) {
-    ctx.fillRect(
-        (lon - this.x0) / this.x1 * width,
-        (lat - this.y0) / this.y1 * height,
-        3, 3
-    );
-  }
+function coord(divisor, offset) {
+    return function (location) {
+        return location / divisor + offset;
+    }
 }
 
-//const TheIsland = new Ark('TheIsland.jpg', 1, 97, 6.5, 91); //Cyan on black
-//const TheIsland = new Ark('TheIsland.png', -1.7, 104, -1, 101.3); //Standard
-const TheIsland = new Ark('The_Island_Topographic_Map.jpg', 7, 86, 7, 86);
+function draw(map) {
+    var min_x = map.x.min;
+    var len_x = map.x.max - map.x.min;
+    var min_y = map.y.min;
+    var len_y = map.y.max - map.y.min;
+
+    return function (ctx, x, y, width, height) {
+        ctx.fillRect(
+            (x - min_x) / len_x * width,
+            (y - min_y) / len_y * height,
+            3, 3
+        );
+    }
+}
+
+function xOffset(map) {
+    var min_x = map.x.min;
+    var len_x = map.x.max - map.x.min;
+
+    return function (x, mapWidth, imageWidth) {
+        return (x - min_x) / len_x * mapWidth - imageWidth / 2;
+    }
+}
+
+function yOffset(map) {
+    var min_y = map.y.min;
+    var len_y = map.y.max - map.y.min;
+
+    return function (y, mapHeight, imageHeight) {
+        return (y - min_y) / len_y * mapHeight - imageHeight / 2;
+    }
+}
+
+function Ark(spec) {
+    this.name = spec.name;
+    this.lat = coord(spec.lat.divisor, spec.lat.offset);
+    this.lon = coord(spec.lon.divisor, spec.lon.offset);
+    this.inGame = {
+        image: 'img/' + spec.name + '_Map.' + spec.inGameMap.extension,
+        data: spec.inGameMap,
+        draw: draw(spec.inGameMap),
+        x: xOffset(spec.inGameMap),
+        y: yOffset(spec.inGameMap),
+    };
+    this.topographical = {
+        image: 'img/' + spec.name + '_Topographic_Map.' + spec.topographicalMap.extension,
+        data: spec.topographicalMap,
+        draw: draw(spec.topographicalMap),
+        x: xOffset(spec.topographicalMap),
+        y: yOffset(spec.topographicalMap),
+    };
+}
+
+function calibrate(map, min_x, max_x, min_y, max_y) {
+    var data = { x: { min: min_x, max: max_x }, y: { min: min_y, max: max_y } };
+    map.draw = draw(data);
+    map.x = xOffset(data);
+    map.y = yOffset(data);
+}
+
+const Arks = [
+    {
+        name: 'TheIsland',
+        lat: { divisor: 8000, offset: 50 },
+        lon: { divisor: 8000, offset: 50 },
+        topographicalMap: {
+            extension: 'jpg',
+            x: { min: -342400, max: 342400 },
+            y: { min: -342400, max: 342400 },
+        },
+        inGameMap: {
+            extension: 'png',
+            x: { min: -342400, max: 342400 },
+            y: { min: -342400, max: 342400 },
+        }
+    },
+    {
+        name: 'CrystalIsles',
+        lat: { divisor: 16000, offset: 48.75 },
+        lon: { divisor: 17000, offset: 50 },
+        topographicalMap: {
+            extension: 'webp',
+            x: { min: -610317.4, max: 617676.56 },
+            y: { min: -600841.8, max: 606877.44 },
+        },
+        inGameMap: {
+            extension: 'webp',
+            x: { min: -699220.6, max: 649618 },
+            y: { min: -712477, max: 725784.6 },
+        }
+    }
+].reduce(function (arks, data) { arks[data.name] = new Ark(data); return arks; }, {});
+const ark = Arks.CrystalIsles;
 
 function size(mh, mw) {
-    let h = window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;
-    let w  = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    let h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    let w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     h = h - 80;
 
     if (mh === 0) {
@@ -40,4 +120,4 @@ function size(mh, mw) {
     return [height, width];
 }
 
-export { TheIsland, size };
+export { ark, calibrate, size };

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { TheIsland, size } from './Maps';
+import { size, ark } from './Maps';
 
 export default function CreatureMap() {
   const canvas = useRef(null);
@@ -14,12 +14,12 @@ export default function CreatureMap() {
 
   useEffect(() => {
     var img = new Image();
-    img.src = TheIsland.image;
+    img.src = ark.topographical.image;
     img.onload = () => { setImage(img) };
   }, []);
 
   useEffect(() => {
-    fetch('wild.json').then(r => r.json()).then(d => {
+    fetch(ark.name + '/wild.json').then(r => r.json()).then(d => {
       let types = new Set();
       for (var dino of d) {
         types.add(dino.className);
@@ -38,13 +38,13 @@ export default function CreatureMap() {
     if (selectedType === null) {
       for (var d of dinos) {
         ctx.fillStyle = d.isFemale ? 'deeppink' : 'blue';
-        TheIsland.draw(ctx, d.longitude, d.latitude, width, height);
+        ark.topographical.draw(ctx, d.x, d.y, width, height);
       }
     } else {
       for (var d of dinos) {
         if (d.className === selectedType[0]) {
           ctx.fillStyle = d.isFemale ? 'deeppink' : 'blue';
-          TheIsland.draw(ctx, d.longitude, d.latitude, width, height);
+          ark.topographical.draw(ctx, d.x, d.y, width, height);
         }
       }
     }

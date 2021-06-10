@@ -15,6 +15,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import { ark } from './Maps';
 
 const STATS = {
   health: { title: '❤️', ind: 0 },
@@ -28,15 +29,6 @@ const STATS = {
   melee: { title: '⛏️', ind: 8 },
   speed: { title: '🦶', ind: 9 },
 };
-// 50 x 34
-// 21, 17
-
-//10, 10 = 45, 47
-//90, 90 = 362, 355
-const map_dx = (362 - 45) / 80 * .75;
-const map_x0 = 45 * .75 - 6.2 - 10 * map_dx;
-const map_dy = (355 - 47) / 80 * .75;
-const map_y0 = 47 * .75 - 3.4 - 10 * map_dy;
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -81,8 +73,8 @@ function wildStat(field) {
 function lat(data) {
   return {
     title: 'Lat',
-    render: data => data.latitude.toFixed(1),
-    customSort: (a, b) => a.latitude - b.latitude,
+    render: data => ark.lat(data.y).toFixed(1),
+    customSort: (a, b) => a.y - b.y,
     defaultSort: 'desc',
   }
 }
@@ -90,8 +82,8 @@ function lat(data) {
 function lon(data) {
   return {
     title: 'Lon',
-    render: data => data.longitude.toFixed(1),
-    customSort: (a, b) => a.longitude - b.longitude,
+    render: data => ark.lon(data.x).toFixed(1),
+    customSort: (a, b) => a.x - b.x,
   }
 }
 
@@ -134,7 +126,7 @@ export default function CreatureTable(props) {
   };
 
   useEffect(() => {
-    fetch(`${file}.json`).then(r => r.json()).then(d => {
+    fetch(`${ark.name}/${file}.json`).then(r => r.json()).then(d => {
       let types = new Set();
       for (var dino of d) {
         types.add(dino.className);
@@ -156,7 +148,7 @@ export default function CreatureTable(props) {
     onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow.tableData.id))}
     detailPanel={data => {
       return <div style={{
-        backgroundImage: "url('TheIsland.png')",
+        backgroundImage: `url('${ark.inGame.image}')`,
         height: '300px',
         width: '300px',
         backgroundSize: 'contain',
@@ -166,8 +158,8 @@ export default function CreatureTable(props) {
             position: 'relative',
             display: 'block',
             height: '10px',
-            left: `${map_x0 + data.longitude * map_dx}px`,
-            top: `${map_y0 + data.latitude * map_dy}px`,
+            left: `${ark.inGame.x(data.x, 300, 10)}px`,
+            top: `${ark.inGame.y(data.y, 300, 10)}px`,
           }}
         />
       </div>

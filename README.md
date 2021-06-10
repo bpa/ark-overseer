@@ -49,6 +49,7 @@ Data for this site is created with [ark-file-parser](https://github.com/bpa/ark-
  * Notifications for hungry tames
  * Notifications for gestation and incubation
  * Support other maps besides The Island
+ * Resource map
 
  # Contributing
 
