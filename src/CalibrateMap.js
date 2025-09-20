@@ -1,7 +1,8 @@
+"use client";
 import React, { useEffect, useState, useRef } from 'react';
 import { ark, calibrate, size } from './Maps';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export default function CalibrateMap() {
   const canvas = useRef(null);
@@ -50,7 +51,7 @@ export default function CalibrateMap() {
         <AddCircleIcon onClick={e => setPoints([...points, { x: x, y: y }])} />
       </div>
       {points.map((p, i) => (
-        <div>({p.x}, {p.y}) <DeleteForeverIcon onClick={function (e) {
+        <div key={i}>({p.x}, {p.y}) <DeleteForeverIcon onClick={function (e) {
           var pts = Array.from(points);
           pts.splice(i, 1);
           setPoints(pts);

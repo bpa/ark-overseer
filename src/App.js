@@ -1,16 +1,17 @@
+"use client";
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import AppBar from '@mui/material/AppBar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import './App.css';
 import CreatureTable from './CreatureTable';
 import CreatureMap from './CreatureMap';
 import NurseryTable from './NurseryTable';
-import CalibrateMap from './CalibrateMap';
+import { Toolbar } from '@mui/material';
+// import CalibrateMap from './CalibrateMap';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -25,7 +26,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography>{children}</Typography>
+          <Typography component={'span'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -45,14 +46,7 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
 export default function App() {
-  const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -60,15 +54,20 @@ export default function App() {
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="Views">
-          <Tab label="Map" {...a11yProps(0)} />
-          <Tab label="Tamed" {...a11yProps(1)} />
-          <Tab label="Wild" {...a11yProps(2)} />
-          <Tab label="Nursery" {...a11yProps(3)} />
-        </Tabs>
-      </AppBar>
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" color="primary" enableColorOnDark>
+          <Toolbar>
+          <Tabs value={value} onChange={handleChange} aria-label="Views">
+            <Tab label="Map" {...a11yProps(0)} />
+            <Tab label="Tamed" {...a11yProps(1)} />
+            <Tab label="Wild" {...a11yProps(2)} />
+            <Tab label="Nursery" {...a11yProps(3)} />
+            {/* <Tab label="Calibrate" {...a11yProps(4)} /> */}
+          </Tabs>
+          </Toolbar>
+        </AppBar>
+      </Box>
       <TabPanel value={value} index={0}>
         <CreatureMap />
       </TabPanel>
@@ -81,9 +80,9 @@ export default function App() {
       <TabPanel value={value} index={3}>
         <NurseryTable file="nursery" title="Nursery" />
       </TabPanel>
-      <TabPanel value={value} index={4}>
+      {/* <TabPanel value={value} index={4}>
         <CalibrateMap title="Calibrate" />
-      </TabPanel>
-    </div>
+      </TabPanel> */}
+    </>
   );
 }

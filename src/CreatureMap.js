@@ -1,7 +1,8 @@
+"use client";
 import React, { useEffect, useState, useRef } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Container from '@material-ui/core/Container';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
+import Autocomplete from '@mui/material/Autocomplete';
 import { size, ark } from './Maps';
 
 export default function CreatureMap() {

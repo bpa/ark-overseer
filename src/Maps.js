@@ -1,3 +1,5 @@
+"use client";
+
 function coord(divisor, offset) {
     return function (location) {
         return location / divisor + offset;
@@ -94,9 +96,24 @@ const Arks = [
             x: { min: -699220.6, max: 649618 },
             y: { min: -712477, max: 725784.6 },
         }
+    },
+    {
+        name: 'Fjordur',
+        lat: { divisor: 7141, offset: 50 },
+        lon: { divisor: 7141, offset: 50 },
+        topographicalMap: {
+            extension: 'jpg',
+            x: { min: -357969.84, max: 361261.56 },
+            y: { min: -358702.7, max: 357360.4 },
+        },
+        inGameMap: {
+            extension: 'webp',
+            x: { min: -699220.6, max: 649618 },
+            y: { min: -712477, max: 357360.4 },
+        }
     }
 ].reduce(function (arks, data) { arks[data.name] = new Ark(data); return arks; }, {});
-const ark = Arks.CrystalIsles;
+const ark = Arks.Fjordur;
 
 function size(mh, mw) {
     let h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
