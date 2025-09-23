@@ -57,6 +57,26 @@ function lon(data) {
   }
 }
 
+
+function realm(data) {
+  if (ark.name == 'Fjordur') {
+    return {
+      field: 'realm',
+      headerName: 'Realm',
+      valueGetter: (v, data) => {
+        if (data.z > -100000) return 'Midgard';
+        if (data.z < -200000) return 'Asgard';
+        if (data.x < 75000) return 'Jotunheim';
+        return 'Vanaheim';
+      },
+      customSort: (a, b) => a.x - b.x,
+    }
+  } else {
+    return {};
+  }
+}
+
+
 export default function CreatureTable(props) {
   const { file, title } = props;
   const [data, setData] = useState([]);
@@ -67,7 +87,7 @@ export default function CreatureTable(props) {
     wild: [
       { headerName: 'Type', field: 'className', valueGetter: (v, data) => dinoTypes[data.className] },
       { headerName: '👫', field: 'isFemale', valueFormatter: b => b ? '♀️' : '♂️' },
-      { headerName: 'LVL', field: 'baseLevel', filtering: false},
+      { headerName: 'LVL', field: 'baseLevel', filtering: false },
       wildStat('health'),
       wildStat('stamina'),
       wildStat('oxygen'),
@@ -77,10 +97,11 @@ export default function CreatureTable(props) {
       wildStat('speed'),
       lat(),
       lon(),
+      realm(),
     ],
     tames: [
-      { headerName: 'Name', field: 'name'},
-      { headerName: 'Type', field: 'className',  valueGetter: (v, data) => dinoTypes[data.className] },
+      { headerName: 'Name', field: 'name' },
+      { headerName: 'Type', field: 'className', valueGetter: (v, data) => dinoTypes[data.className] },
       { headerName: '👫', field: 'isFemale', valueFormatter: b => b ? '♀️' : '♂️' },
       { headerName: 'LVL', field: 'baseLevel', filtering: false },
       tamedStat('health'),
@@ -92,6 +113,7 @@ export default function CreatureTable(props) {
       tamedStat('speed'),
       lat(),
       lon(),
+      realm(),
     ]
   };
 
