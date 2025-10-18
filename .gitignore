@@ -24,3 +24,4 @@ yarn-error.log*
 
 # variable static data
 /public/**/*.json
+/public/**/names.txt

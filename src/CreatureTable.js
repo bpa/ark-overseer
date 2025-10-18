@@ -57,7 +57,6 @@ function lon(data) {
   }
 }
 
-
 function realm(data) {
   if (ark.name === 'Fjordur') {
     return {

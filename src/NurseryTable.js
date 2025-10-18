@@ -1,6 +1,6 @@
 "use client";
 import React, { forwardRef, useEffect, useState } from 'react';
-import Table from '@mui/material/Table';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ark } from './Maps';
 
 const STATS = {
@@ -19,10 +19,48 @@ const STATS = {
 function wildStat(field) {
   var { title, ind } = STATS[field];
   return {
-    title: title,
-    render: data => data.baseStats[ind],
+    field: field,
+    headerName: title,
+    valueGetter: (v, data) => data.baseStats[ind],
     customSort: (a, b) => a.baseStats[ind] - b.baseStats[ind],
     defaultSort: 'desc',
+  }
+}
+
+function lat(data) {
+  return {
+    field: 'lat',
+    headerName: 'Lat',
+    valueGetter: (v, data) => ark.lat(data.y).toFixed(1),
+    customSort: (a, b) => a.y - b.y,
+    defaultSort: 'desc',
+  }
+}
+
+function lon(data) {
+  return {
+    field: 'lon',
+    headerName: 'Lon',
+    valueGetter: (v, data) => ark.lon(data.x).toFixed(1),
+    customSort: (a, b) => a.x - b.x,
+  }
+}
+
+function realm(data) {
+  if (ark.name == 'Fjordur') {
+    return {
+      field: 'realm',
+      headerName: 'Realm',
+      valueGetter: (v, data) => {
+        if (data.z > -100000) return 'Midgard';
+        if (data.z < -200000) return 'Asgard';
+        if (data.x < 75000) return 'Jotunheim';
+        return 'Vanaheim';
+      },
+      customSort: (a, b) => a.x - b.x,
+    }
+  } else {
+    return {};
   }
 }
 
@@ -35,8 +73,9 @@ export default function NurseryTable(props) {
   const [dinoTypes, setTypes] = useState({});
 
   const COLUMNS = [
-    { title: 'Type', field: 'className', lookup: dinoTypes },
-    { title: 'Parent', field: 'parent', filtering: true },
+    { headerName: 'Type', field: 'className', valueGetter: (v, data) => dinoTypes[data.className] },
+    { headerName: '👫', field: 'isFemale', valueFormatter: b => b ? '♀️' : '♂️' },
+    { headerName: 'Parent', field: 'parent' },
     wildStat('health'),
     wildStat('stamina'),
     wildStat('oxygen'),
@@ -44,12 +83,17 @@ export default function NurseryTable(props) {
     wildStat('weight'),
     wildStat('melee'),
     wildStat('speed'),
+    lat(),
+    lon(),
+    realm(),
   ];
 
   useEffect(() => {
     fetch(`${ark.name}/nursery.json`).then(r => r.json()).then(d => {
       let types = new Set();
+      let id = 0;
       for (var dino of d) {
+        dino.id = id++;
         types.add(dino.className);
       }
       let typeMap = {};
@@ -66,19 +110,9 @@ export default function NurseryTable(props) {
     });
   }, [file]);
 
-  return <Table
+  return <DataGrid
     title={title}
     columns={COLUMNS}
-    data={data}
-    options={{
-      pageSize: 50,
-      pageSizeOptions: [10, 25, 50],
-      sorting: true,
-      filtering: true,
-      padding: 'dense',
-      rowStyle: rowData => ({
-        backgroundColor: (selectedRow === rowData.tableData.id) ? '#EEE' : '#FFF'
-      })
-    }}
+    rows={data}
   />
 }
