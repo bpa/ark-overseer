@@ -1,6 +1,6 @@
 "use client";
-import React, { forwardRef, useEffect, useState } from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React, { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
 import { ark } from './Maps';
 
 const STATS = {
@@ -59,7 +59,7 @@ function lon(data) {
 
 
 function realm(data) {
-  if (ark.name == 'Fjordur') {
+  if (ark.name === 'Fjordur') {
     return {
       field: 'realm',
       headerName: 'Realm',
@@ -76,16 +76,22 @@ function realm(data) {
   }
 }
 
-
 export default function CreatureTable(props) {
   const { file, title } = props;
   const [data, setData] = useState([]);
-  const [selectedRow, setSelectedRow] = useState(null);
   const [dinoTypes, setTypes] = useState({});
+
+  function getClassName(v, data) {
+    const baseName = dinoTypes[data.className];
+    if (data.resource) {
+      return `${baseName} (${data.resource})`;
+    }
+    return baseName;
+  }
 
   const COLUMNS = {
     wild: [
-      { headerName: 'Type', field: 'className', valueGetter: (v, data) => dinoTypes[data.className] },
+      { headerName: 'Type', field: 'className', valueGetter: getClassName },
       { headerName: '👫', field: 'isFemale', valueFormatter: b => b ? '♀️' : '♂️' },
       { headerName: 'LVL', field: 'baseLevel', filtering: false },
       wildStat('health'),
