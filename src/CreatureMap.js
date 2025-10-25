@@ -27,7 +27,7 @@ export default function CreatureMap() {
       }
       let typeList = Array.from(types);
       typeList = typeList.map(d => [d, d.replace('_Character_BP_C', '')]);
-      typeList.sort((a, b) => a[0].localeCompare(b[1]));
+      typeList.sort((a, b) => a[1].localeCompare(b[1]));
       setTypes(typeList);
       setDinos(d);
     });
@@ -60,7 +60,7 @@ export default function CreatureMap() {
           options={types}
           renderInput={(params) => <TextField {...params} label="Dino Type" variant="outlined" />}
           value={selectedType}
-          onChange={(e, v) => { console.log(v); chooseType(v) }}
+          onChange={(e, v) => { chooseType(v) }}
         />
       </Container>
     </div>

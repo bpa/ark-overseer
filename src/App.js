@@ -10,6 +10,7 @@ import './App.css';
 import CreatureTable from './CreatureTable';
 import CreatureMap from './CreatureMap';
 import NurseryTable from './NurseryTable';
+import Search from './Search';
 import { Toolbar } from '@mui/material';
 // import CalibrateMap from './CalibrateMap';
 
@@ -63,7 +64,8 @@ export default function App() {
             <Tab label="Tamed" {...a11yProps(1)} />
             <Tab label="Wild" {...a11yProps(2)} />
             <Tab label="Nursery" {...a11yProps(3)} />
-            {/* <Tab label="Calibrate" {...a11yProps(4)} /> */}
+            <Tab label="Search" {...a11yProps(4)} />
+            {/* <Tab label="Calibrate" {...a11yProps(5)} /> */}
           </Tabs>
           </Toolbar>
         </AppBar>
@@ -80,7 +82,10 @@ export default function App() {
       <TabPanel value={value} index={3}>
         <NurseryTable file="nursery" title="Nursery" />
       </TabPanel>
-      {/* <TabPanel value={value} index={4}>
+      <TabPanel value={value} index={4}>
+        <Search />
+      </TabPanel>
+      {/* <TabPanel value={value} index={5}>
         <CalibrateMap title="Calibrate" />
       </TabPanel> */}
     </>
