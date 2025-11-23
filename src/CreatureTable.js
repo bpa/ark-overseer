@@ -14,6 +14,7 @@ const STATS = {
   weight: { title: '🥌', ind: 7 },
   melee: { title: '⛏️', ind: 8 },
   speed: { title: '🦶', ind: 9 },
+  crafting: { title: '🛠️', ind: 11 },
 };
 
 function tamedStat(field) {
@@ -100,6 +101,7 @@ export default function CreatureTable(props) {
       wildStat('weight'),
       wildStat('melee'),
       wildStat('speed'),
+      wildStat('crafting'),
       lat(),
       lon(),
       realm(),
