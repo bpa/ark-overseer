@@ -113,7 +113,7 @@ export default function Search(props) {
       setTypeLookup(typeMap)
       setTypes(typeNames)
       setData(bestDinos);
-      setDinos(data[selectedType]);
+      setDinos(bestDinos[selectedType]);
     });
   }, [ark]);
 
