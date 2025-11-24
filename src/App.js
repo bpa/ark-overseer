@@ -11,8 +11,10 @@ import CreatureTable from './CreatureTable';
 import CreatureMap from './CreatureMap';
 import NurseryTable from './NurseryTable';
 import Search from './Search';
-import { Toolbar } from '@mui/material';
+import { Toolbar, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 // import CalibrateMap from './CalibrateMap';
+
+import { Arks } from './Maps';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -49,9 +51,14 @@ function a11yProps(index) {
 
 export default function App() {
   const [value, setValue] = React.useState(0);
+  const [ark, setArk] = React.useState(Arks[0]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleMapChange = (event) => {
+    setArk(event.target.value);
   };
 
   return (
@@ -59,34 +66,61 @@ export default function App() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" color="primary" enableColorOnDark>
           <Toolbar>
-          <Tabs value={value} onChange={handleChange} aria-label="Views">
-            <Tab label="Map" {...a11yProps(0)} />
-            <Tab label="Tamed" {...a11yProps(1)} />
-            <Tab label="Wild" {...a11yProps(2)} />
-            <Tab label="Nursery" {...a11yProps(3)} />
-            <Tab label="Search" {...a11yProps(4)} />
-            {/* <Tab label="Calibrate" {...a11yProps(5)} /> */}
-          </Tabs>
+            <Tabs value={value} onChange={handleChange} aria-label="Views">
+              <Tab label="Map" {...a11yProps(0)} />
+              <Tab label="Tamed" {...a11yProps(1)} />
+              <Tab label="Wild" {...a11yProps(2)} />
+              <Tab label="Nursery" {...a11yProps(3)} />
+              <Tab label="Search" {...a11yProps(4)} />
+              {/* <Tab label="Calibrate" {...a11yProps(5)} /> */}
+            </Tabs>
+
+            {/* spacer to push the select to the right */}
+            <Box sx={{ flexGrow: 1 }} />
+
+            {/* Map selector (right-aligned) */}
+            <FormControl variant="standard" sx={{ minWidth: 160 }}>
+              <InputLabel id="map-select-label">Map</InputLabel>
+              <Select
+                labelId="map-select-label"
+                id="map-select"
+                value={ark}
+                onChange={handleMapChange}
+                label="Map"
+              >
+                {Arks.length > 0 ? (
+                  Arks.map((m) => (
+                    <MenuItem key={m.key ?? m} value={m.key ?? m}>
+                      {m.name ?? m.key ?? m}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <>
+                    <MenuItem value="default">Default</MenuItem>
+                  </>
+                )}
+              </Select>
+            </FormControl>
           </Toolbar>
         </AppBar>
       </Box>
       <TabPanel value={value} index={0}>
-        <CreatureMap />
+        <CreatureMap ark={ark} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <CreatureTable file="tames" title="Tamed Dinos" />
+        <CreatureTable file="tames" title="Tamed Dinos" ark={ark} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CreatureTable file="wild" title="Wild Dinos" />
+        <CreatureTable file="wild" title="Wild Dinos" ark={ark} />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <NurseryTable file="nursery" title="Nursery" />
+        <NurseryTable file="nursery" title="Nursery" ark={ark} />
       </TabPanel>
       <TabPanel value={value} index={4}>
-        <Search />
+        <Search ark={ark} />
       </TabPanel>
       {/* <TabPanel value={value} index={5}>
-        <CalibrateMap title="Calibrate" />
+        <CalibrateMap title="Calibrate" ark={ark} />
       </TabPanel> */}
     </>
   );

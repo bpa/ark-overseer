@@ -4,8 +4,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import { DataGrid } from '@mui/x-data-grid';
-import { ark } from './Maps';
-import { type } from '@testing-library/user-event/dist/type';
 
 const STATS = {
   health: { title: '❤️', ind: 0 },
@@ -32,49 +30,50 @@ function wildStat(field) {
   }
 }
 
-function lat(data) {
-  return {
-    field: 'lat',
-    headerName: 'Lat',
-    valueGetter: (v, data) => ark.lat(data.y).toFixed(1),
-    customSort: (a, b) => a.y - b.y,
-    defaultSort: 'desc',
-  }
-}
-
-function lon(data) {
-  return {
-    field: 'lon',
-    headerName: 'Lon',
-    valueGetter: (v, data) => ark.lon(data.x).toFixed(1),
-    customSort: (a, b) => a.x - b.x,
-  }
-}
-
-function realm(data) {
-  if (ark.name === 'Fjordur') {
-    return {
-      field: 'realm',
-      headerName: 'Realm',
-      valueGetter: (v, data) => {
-        if (data.z > -100000) return 'Midgard';
-        if (data.z < -200000) return 'Asgard';
-        if (data.x < 75000) return 'Jotunheim';
-        return 'Vanaheim';
-      },
-      customSort: (a, b) => a.x - b.x,
-    }
-  } else {
-    return {};
-  }
-}
-
-export default function Search() {
+export default function Search(props) {
+  const { ark } = props;
   const [data, setData] = useState({});
   const [dinos, setDinos] = useState([]);
   const [types, setTypes] = useState([]);
   const [typeLookup, setTypeLookup] = useState([]);
   const [selectedType, setSelectedType] = useState(null);
+
+  function lat(data) {
+    return {
+      field: 'lat',
+      headerName: 'Lat',
+      valueGetter: (v, data) => ark.lat(data.y).toFixed(1),
+      customSort: (a, b) => a.y - b.y,
+      defaultSort: 'desc',
+    }
+  }
+
+  function lon(data) {
+    return {
+      field: 'lon',
+      headerName: 'Lon',
+      valueGetter: (v, data) => ark.lon(data.x).toFixed(1),
+      customSort: (a, b) => a.x - b.x,
+    }
+  }
+
+  function realm(data) {
+    if (ark.name === 'Fjordur') {
+      return {
+        field: 'realm',
+        headerName: 'Realm',
+        valueGetter: (v, data) => {
+          if (data.z > -100000) return 'Midgard';
+          if (data.z < -200000) return 'Asgard';
+          if (data.x < 75000) return 'Jotunheim';
+          return 'Vanaheim';
+        },
+        customSort: (a, b) => a.x - b.x,
+      }
+    } else {
+      return {};
+    }
+  }
 
   useEffect(() => {
     fetch(ark.name + '/wild.json').then(r => r.json()).then(d => {
@@ -114,8 +113,9 @@ export default function Search() {
       setTypeLookup(typeMap)
       setTypes(typeNames)
       setData(bestDinos);
+      setDinos(data[selectedType]);
     });
-  }, []);
+  }, [ark]);
 
   function getClassName(v, data) {
     const baseName = typeLookup[data.className];
@@ -148,7 +148,6 @@ export default function Search() {
         renderInput={(params) => <TextField {...params} label="Dino Type" variant="outlined" />}
         value={selectedType}
         onChange={(e, v) => {
-          console.log(v);
           setDinos(data[v]);
           setSelectedType(v);
         }}

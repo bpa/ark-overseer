@@ -3,9 +3,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Autocomplete from '@mui/material/Autocomplete';
-import { size, ark } from './Maps';
+import { size } from './Maps';
 
-export default function CreatureMap() {
+export default function CreatureMap(props) {
+  const { ark } = props;
   const canvas = useRef(null);
   const [image, setImage] = useState(new Image());
   const [dinos, setDinos] = useState([]);
@@ -17,7 +18,7 @@ export default function CreatureMap() {
     var img = new Image();
     img.src = ark.topographical.image;
     img.onload = () => { setImage(img) };
-  }, []);
+  }, [ark]);
 
   useEffect(() => {
     fetch(ark.name + '/wild.json').then(r => r.json()).then(d => {
@@ -31,7 +32,7 @@ export default function CreatureMap() {
       setTypes(typeList);
       setDinos(d);
     });
-  }, []);
+  }, [ark]);
 
   useEffect(() => {
     let ctx = canvas.current.getContext('2d');

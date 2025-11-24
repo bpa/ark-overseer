@@ -112,8 +112,7 @@ const Arks = [
             y: { min: -712477, max: 357360.4 },
         }
     }
-].reduce(function (arks, data) { arks[data.name] = new Ark(data); return arks; }, {});
-const ark = Arks.Fjordur;
+].reduce(function (arks, data) { arks.push(new Ark(data)); return arks; }, []);
 
 function size(mh, mw) {
     let h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
@@ -137,4 +136,4 @@ function size(mh, mw) {
     return [height, width];
 }
 
-export { ark, calibrate, size };
+export { Arks, calibrate, size };

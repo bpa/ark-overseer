@@ -1,10 +1,11 @@
 "use client";
 import React, { useEffect, useState, useRef } from 'react';
-import { ark, calibrate, size } from './Maps';
+import { calibrate, size } from './Maps';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-export default function CalibrateMap() {
+export default function CalibrateMap(props) {
+  const { ark } = props;
   const canvas = useRef(null);
   const [ver, setVersion] = useState(0);
   const [map, setMap] = useState(ark.topographical)
